@@ -49,16 +49,21 @@ static inline CFTypeRef it_CFAutorelease(CFTypeRef obj) {
 @implementation NSColor (ITSwitchCGColor)
 
 - (CGColorRef)it_CGColor {
-    const NSInteger numberOfComponents = [self numberOfComponents];
-    CGFloat components[numberOfComponents];
-    CGColorSpaceRef colorSpace = [[self colorSpace] CGColorSpace];
+//    const NSInteger numberOfComponents = [self numberOfComponents];
+//    CGFloat components[numberOfComponents];
+//    CGColorSpaceRef colorSpace = [[self colorSpace] CGColorSpace];
+//    
+//    [self getComponents:(CGFloat *)&components];
+//    
+//    CGColorRef result = CGColorCreate(colorSpace, components);
+//    it_CFAutorelease(result);
+//    
+//    return result;
     
-    [self getComponents:(CGFloat *)&components];
     
-    CGColorRef result = CGColorCreate(colorSpace, components);
-    it_CFAutorelease(result);
+   // AH, the code above crashes on Release config only, and we don't care about 10.7 compatibility. See https://github.com/iluuu1994/ITSwitch/issues/15
+    return [self CGColor];
     
-    return result;
 }
 
 @end
