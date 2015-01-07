@@ -386,5 +386,51 @@ static inline CFTypeRef it_CFAutorelease(CFTypeRef obj) {
     }
 }
 
+#pragma mark - Accessibility
+
+- (BOOL)accessibilityIsIgnored {
+    return NO;
+}
+
+- (NSString *)accessibilityRoleAttribute {
+    return NSAccessibilityCheckBoxRole;
+}
+
+- (NSArray *)accessibilityAttributeNames {
+    static NSArray *accessibilityAttributes = nil;
+    if (accessibilityAttributes == nil) {
+        accessibilityAttributes = [[super accessibilityAttributeNames] arrayByAddingObjectsFromArray:@[NSAccessibilityValueAttribute]];
+    }
+    return accessibilityAttributes;
+}
+
+- (NSNumber *)accessibilityValueAttribute {
+    return [NSNumber numberWithBool:[self isOn]];
+}
+
+- (BOOL)accessibilityIsValueAttributeSettable {
+    return YES;
+}
+
+- (NSArray *)accessibilityActionNames {
+    return [[super accessibilityActionNames] arrayByAddingObject:NSAccessibilityPressAction];
+}
+
+- (NSString *)accessibilityActionDescription:(NSString *)action {
+    if ([action isEqualToString:NSAccessibilityPressAction]) {
+        return NSAccessibilityActionDescription(action);
+    } else {
+        return [super accessibilityActionDescription:action];
+    }
+}
+
+- (void)accessibilityPerformAction:(NSString *)action {
+    if ([action isEqualToString:NSAccessibilityPressAction]) {
+        [self setOn:![self isOn]];
+        [self _invokeTargetAction]; // this control should implement performClick: instead of having to call setOn: + _invokeTargetAction...
+    } else {
+        [super accessibilityPerformAction:action];
+    }
+}
 
 @end
